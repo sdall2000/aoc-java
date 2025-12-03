@@ -11,7 +11,7 @@ public class LobbyTest {
         var lines = Utilities.readResourceLines("/day03/input.txt");
         var solution = new Lobby();
 
-        assertEquals(17_031, solution.part1(lines));
+        assertEquals(17_031, solution.getMaxJoltage(lines, 2));
     }
 
     @Test
@@ -19,6 +19,6 @@ public class LobbyTest {
         var lines = Utilities.readResourceLines("/day03/input.txt");
         var solution = new Lobby();
 
-        assertEquals(-1, solution.part2(lines));
+        assertEquals(168_575_096_286_051L, solution.getMaxJoltage(lines, 12));
     }
 }

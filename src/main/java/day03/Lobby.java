@@ -3,7 +3,7 @@ package day03;
 import java.util.List;
 
 public class Lobby {
-    public long part1(List<String> lines) throws NumberFormatException {
+    public long getMaxJoltage(List<String> lines, int batteriesAvailable) {
         var result = 0L;
 
         for (String line : lines) {
@@ -13,76 +13,30 @@ public class Lobby {
                 batteries[i] = Long.parseLong(String.valueOf(line.charAt(i)));
             }
 
-            result += getMaxJoltage(batteries);
+            result += getMaxJoltage(batteries, 0, batteriesAvailable);
         }
 
         return result;
     }
 
-    public long part2(List<String> lines) {
-        var result = 0L;
+    // Get the max joltage given the array of batteries, the start index, and the digits remaining
+    private long getMaxJoltage(long[] batteries, int startIndex, int digitsRemaining) {
+        long maxValue = -1;
+        int maxIndex = -1;
 
-        for (String line : lines) {
-            long[] batteries = new long[line.length()];
-
-            for (int i=0; i < line.length(); i++) {
-                batteries[i] = Long.parseLong(String.valueOf(line.charAt(i)));
-            }
-
-            result += getMaxJoltage(batteries, 12);
-        }
-
-        return result;
-    }
-
-    public long getMaxJoltage(long[] batteries) {
-        // First, find the largest number, excluding the very last one
-        // Then, find the next largest number after the first largest number
-
-        int largestIndex = -1;
-        long largestValue = -1;
-
-        for (int i=0; i < batteries.length - 1; i++) {
-            if (batteries[i] > largestValue) {
-                largestValue = batteries[i];
-                largestIndex = i;
+        for (int i=startIndex; i <= batteries.length - digitsRemaining; i++) {
+            if (batteries[i] > maxValue) 
+            {
+                maxValue = batteries[i];
+                maxIndex = i;
             }
         }
 
-        long nextLargestValue = -1;
+        if (digitsRemaining == 1) return maxValue;
 
-        for (int i=largestIndex + 1; i < batteries.length; i++) {
-            if (batteries[i] > nextLargestValue) nextLargestValue = batteries[i];
-        }
+        digitsRemaining--;
 
-        return largestValue * 10 + nextLargestValue;
-    }
-
-    public long getMaxJoltage(long[] batteries, int digits) {
-        // First, find the largest number, excluding the very last one
-        // Then, find the next largest number after the first largest number
-
-        int largestIndex = -1;
-        long largestValue = -1;
-
-        for (int i=0; i < batteries.length - 1; i++) {
-            if (batteries[i] > largestValue) {
-                largestValue = batteries[i];
-                largestIndex = i;
-            }
-        }
-
-        long nextLargestValue = -1;
-
-        for (int i=largestIndex + 1; i < batteries.length; i++) {
-            if (batteries[i] > nextLargestValue) nextLargestValue = batteries[i];
-        }
-
-        return largestValue * 10 + nextLargestValue;
-    }
-
-    public long getMaxJoltage(long[] batteries, int startIndex, int digits) {
-        
+        return maxValue * Math.round(Math.pow(10, digitsRemaining)) + getMaxJoltage(batteries, maxIndex+1, digitsRemaining);
     }
 
 }
