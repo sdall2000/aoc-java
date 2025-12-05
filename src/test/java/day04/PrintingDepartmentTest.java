@@ -19,6 +19,6 @@ public class PrintingDepartmentTest {
         var lines = Utilities.readResourceLines("/day04/input.txt");
         var solution = new PrintingDepartment();
 
-        assertEquals(-1, solution.part2(lines));
+        assertEquals(8_184, solution.part2(lines));
     }
 }

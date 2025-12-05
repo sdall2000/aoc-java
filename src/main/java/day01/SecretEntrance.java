@@ -1,8 +1,8 @@
 package day01;
 
-import java.util.List;
+import common.Pair;
 
-import io.arxila.javatuples.Pair;
+import java.util.List;
 
 public class SecretEntrance {
     public long part1(List<String> lines) {

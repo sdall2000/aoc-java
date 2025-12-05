@@ -1,7 +1,5 @@
 package common;
 
-import io.arxila.javatuples.Pair;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,7 +119,7 @@ public final class Utilities {
     }
 
     // Courtesy Baeldung
-    public static Optional<Pair<Double, Double>> calculateIntersectionPoint(
+    public static Optional<DoublePair> calculateIntersectionPoint(
             double m1,
             double b1,
             double m2,
@@ -134,7 +132,7 @@ public final class Utilities {
         double x = (b2 - b1) / (m1 - m2);
         double y = m1 * x + b1;
 
-        Pair<Double, Double> point = new Pair<>(x, y);
+        DoublePair point = new DoublePair(x, y);
         return Optional.of(point);
     }
 

@@ -1,8 +1,5 @@
 package common;
 
-import io.arxila.javatuples.Pair;
-import io.arxila.javatuples.Trio;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,21 +12,21 @@ public class Grid
     private final int rowCount;
     private final int colCount;
 
-    private final List<Pair<Integer, Integer>> nsewOffsets = List.of(
-            new Pair<>(-1, 0),
-            new Pair<>(1, 0),
-            new Pair<>(0, 1),
-            new Pair<>(0, -1));
+    private final List<RowCol> nsewOffsets = List.of(
+            new RowCol(-1, 0),
+            new RowCol(1, 0),
+            new RowCol(0, 1),
+            new RowCol(0, -1));
 
-    private final List<Pair<Integer, Integer>> allOffsets = List.of(
-            new Pair<>(-1, 0),
-            new Pair<>(-1, 1),
-            new Pair<>(0, 1),
-            new Pair<>(1, 1),
-            new Pair<>(1, 0),
-            new Pair<>(1, -1),
-            new Pair<>(0, -1),
-            new Pair<>(-1, -1));
+    private final List<RowCol> allOffsets = List.of(
+            new RowCol(-1, 0),
+            new RowCol(-1, 1),
+            new RowCol(0, 1),
+            new RowCol(1, 1),
+            new RowCol(1, 0),
+            new RowCol(1, -1),
+            new RowCol(0, -1),
+            new RowCol(-1, -1));
 
     public Grid(int rowCount, int colCount) {
         values = new int[rowCount][colCount];
@@ -87,26 +84,26 @@ public class Grid
         return colCount;
     }
 
-    public List<Pair<Integer, Integer>> getValidNsewNeighbors(int row, int col) {
-        List<Pair<Integer, Integer>> list = new ArrayList<>();
+    public List<RowCol> getValidNsewNeighbors(int row, int col) {
+        List<RowCol> list = new ArrayList<>();
 
         nsewOffsets.forEach(p -> {
-            int rowOffset = p.value0();
-            int colOffset = p.value1();
+            int rowOffset = p.row();
+            int colOffset = p.col();
 
             int newRow = row + rowOffset;
             int newCol = col + colOffset;
 
-            if (inBounds(newRow, newCol)) list.add(new Pair<>(newRow, newCol));
+            if (inBounds(newRow, newCol)) list.add(new RowCol(newRow, newCol));
         });
 
         return list;
     }
 
-    public List<Pair<Integer, Integer>> getAllValidNeighbors(int row, int col) {
+    public List<RowCol> getAllValidNeighbors(int row, int col) {
         return allOffsets.stream().filter(p -> {
-            int rowOffset = p.value0();
-            int colOffset = p.value1();
+            int rowOffset = p.row();
+            int colOffset = p.col();
 
             int newRow = row + rowOffset;
             int newCol = col + colOffset;
@@ -115,12 +112,12 @@ public class Grid
         }).collect(Collectors.toList());
     }
 
-    public List<Trio<Integer, Integer, Integer>> getRowColValues() {
-        List<Trio<Integer, Integer, Integer>> list = new ArrayList<>();
+    public List<RowColValue> getRowColValues() {
+        List<RowColValue> list = new ArrayList<>();
 
         for (int row=0; row <= maxRow; row++) {
             for (int col=0; col <= maxCol; col++) {
-                list.add(new Trio<>(row, col, valueAt(row, col)));
+                list.add(new RowColValue(row, col, valueAt(row, col)));
             }
         }
 

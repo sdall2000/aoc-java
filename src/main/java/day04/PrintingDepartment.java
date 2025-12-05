@@ -18,7 +18,7 @@ public class PrintingDepartment {
                     int paperCount = 0;
 
                     for (var neighbor : neighbors) {
-                        if (charGrid.valueAt(neighbor.value0(), neighbor.value1()) == '@') paperCount++;
+                        if (charGrid.valueAt(neighbor.row(), neighbor.col()) == '@') paperCount++;
                     }
 
                     if (paperCount < 4) result++;
@@ -47,7 +47,7 @@ public class PrintingDepartment {
                     int paperCount = 0;
 
                     for (var neighbor : neighbors) {
-                        if (charGrid.valueAt(neighbor.value0(), neighbor.value1()) == '@') paperCount++;
+                        if (charGrid.valueAt(neighbor.row(), neighbor.col()) == '@') paperCount++;
                     }
 
                     if (paperCount < 4) {

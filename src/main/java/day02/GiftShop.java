@@ -45,8 +45,6 @@ public class GiftShop {
     }
 
     public long getInvalidIdCount(long start, long end) {
-        System.out.println("Working on sequence " + start + "-" + end);
-
         long invalidCount = 0;
 
         for (long n=start; n <= end; n++) {
@@ -63,8 +61,6 @@ public class GiftShop {
     }
 
     public long getInvalidIdCount2(long start, long end) {
-        System.out.println("Working on sequence " + start + "-" + end);
-
         long invalidCount = 0;
 
         for (long n=start; n <= end; n++) {
@@ -81,22 +77,17 @@ public class GiftShop {
         // If five digits, same
         int lastCharIndex = str.length() / 2 - 1;
 
-        System.out.println("Last char index: " + lastCharIndex);
-
         // This loop will build substrings that start at index 0, and go up to lastCharIndex
         for (int i=0; i <= lastCharIndex; i++) {
             String s = str.substring(0, i+1);
             int sLength = s.length();
-
-            System.out.println("Substring is " + s);
 
             if (str.length() % s.length() != 0) continue;
 
             boolean breakOut = false;
 
             // Now walk through the rest of the string
-            for (int j=s.length(); j < str.length(); j += s.length()) {
-                System.out.println("J is " + j);
+            for (int j=sLength; j < str.length(); j += sLength) {
                 if (!str.substring(j, j + s.length()).equals(s)) {
                     breakOut = true;
                     break;

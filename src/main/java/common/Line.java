@@ -1,7 +1,5 @@
 package common;
 
-import io.arxila.javatuples.Pair;
-
 public record Line(Point point1, Point point2) {
     public boolean connected(Line other) {
         return commonPoint(other) != null;
@@ -16,8 +14,7 @@ public record Line(Point point1, Point point2) {
         return null;
     }
 
-
-    public Pair<Point, Point> uncommonPoints(Line other) {
+    public PointPair uncommonPoints(Line other) {
         Point common = commonPoint(other);
 
         if (common == null) return null;
@@ -35,7 +32,7 @@ public record Line(Point point1, Point point2) {
 
         if (first.equals(second)) return null;
 
-        return new Pair<>(point1, point2);
+        return new PointPair(point1, point2);
     }
 
     public static boolean isAdjacentLine(Point point1, Point point2) {
