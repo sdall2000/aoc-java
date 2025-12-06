@@ -11,7 +11,7 @@ public class HistorianHysteriaTest {
         var lines = Utilities.readResourceLines("/yr2024/day01/input.txt");
         var solution = new HistorianHysteria();
 
-        assertEquals(-1, solution.part1(lines));
+        assertEquals(2_113_135, solution.part1(lines));
     }
 
     @Test
@@ -19,6 +19,6 @@ public class HistorianHysteriaTest {
         var lines = Utilities.readResourceLines("/yr2024/day01/input.txt");
         var solution = new HistorianHysteria();
 
-        assertEquals(-1, solution.part2(lines));
+        assertEquals(19_097_157, solution.part2(lines));
     }
 }
