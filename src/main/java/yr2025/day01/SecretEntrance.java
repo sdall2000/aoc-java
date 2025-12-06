@@ -1,4 +1,4 @@
-package day01;
+package yr2025.day01;
 
 import common.Pair;
 

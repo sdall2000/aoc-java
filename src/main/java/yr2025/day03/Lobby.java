@@ -1,4 +1,4 @@
-package day03;
+package yr2025.day03;
 
 import java.util.List;
 

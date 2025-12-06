@@ -52,10 +52,11 @@ if n != 3:
 
 day = sys.argv[1]
 padded_day = day.zfill(2)
+yr_package = "yr" + year
 directory = "day" + day.zfill(2)
-srcDirectory = srcRoot + "/" + directory
-tstDirectory = testSrcRoot + "/" + directory
-tstResourceDirectory = testResourceRoot + "/" + directory
+srcDirectory = srcRoot + "/" + yr_package + "/" + directory
+tstDirectory = testSrcRoot + "/" + yr_package + "/" + directory
+tstResourceDirectory = testResourceRoot + "/" + yr_package + "/" + directory
 name = sys.argv[2]
 
 print(f"Name: {name}, directory: {directory}")    
@@ -77,16 +78,16 @@ if not os.path.exists(code_template) or not os.path.exists(unit_test_template):
     exit()
 
 # Create the directory for the day we are working on
-os.mkdir(srcDirectory)
-os.mkdir(tstDirectory)
-os.mkdir(tstResourceDirectory)
+os.makedirs(srcDirectory)
+os.makedirs(tstDirectory)
+os.makedirs(tstResourceDirectory)
 
 # Create implementation file
 implementation_file = srcDirectory + '/' + name + '.java'
 
 with open(code_template, 'r') as input_file, open(implementation_file, 'w') as output_file:
     for line in input_file:
-        line = line.replace(package_token, directory)
+        line = line.replace(package_token, yr_package + "." + directory)
         line = line.replace(class_token, name)
 
         output_file.write(line)
@@ -96,8 +97,8 @@ unit_test_file = tstDirectory + '/' + name + 'Test.java'
 
 with open(unit_test_template, 'r') as input_file, open(unit_test_file, 'w') as output_file:
     for line in input_file:
-        line = line.replace(test_folder_token, directory + '/')
-        line = line.replace(package_token, directory)
+        line = line.replace(test_folder_token, yr_package + '/' + directory + '/')
+        line = line.replace(package_token, yr_package + "." + directory)
         line = line.replace(class_token, name)
         line = line.replace(class_token_test, name + 'Test')
 

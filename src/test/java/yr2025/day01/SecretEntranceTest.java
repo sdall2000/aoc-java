@@ -1,4 +1,4 @@
-package day01;
+package yr2025.day01;
 
 import common.Utilities;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SecretEntranceTest {
     @Test
     void part1() throws IOException {
-        var lines = Utilities.readResourceLines("/day01/input.txt");
+        var lines = Utilities.readResourceLines("/yr2025/day01/input.txt");
         var solution = new SecretEntrance();
 
         assertEquals(1_165, solution.part1(lines));
@@ -18,7 +18,7 @@ public class SecretEntranceTest {
 
     @Test
     void part2() throws IOException {
-        var lines = Utilities.readResourceLines("/day01/input.txt");
+        var lines = Utilities.readResourceLines("/yr2025/day01/input.txt");
         var solution = new SecretEntrance();
 
         assertEquals(6496, solution.part2(lines));
