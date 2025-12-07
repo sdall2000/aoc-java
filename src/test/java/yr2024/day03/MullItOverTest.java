@@ -11,7 +11,7 @@ public class MullItOverTest {
         var lines = Utilities.readResourceLines("/yr2024/day03/input.txt");
         var solution = new MullItOver();
 
-        assertEquals(-1, solution.part1(lines));
+        assertEquals(173_731_097, solution.part1(lines));
     }
 
     @Test
@@ -19,6 +19,6 @@ public class MullItOverTest {
         var lines = Utilities.readResourceLines("/yr2024/day03/input.txt");
         var solution = new MullItOver();
 
-        assertEquals(-1, solution.part2(lines));
+        assertEquals(93_729_253, solution.part2(lines));
     }
 }
