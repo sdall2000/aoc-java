@@ -72,8 +72,6 @@ public class Playground {
                     }
 
                     circuits.remove(closestCircuit);
-                } else {
-                    continue;
                 }
             } else if (!junctionToCircuit.containsKey(junctionBox) && !junctionToCircuit.containsKey(closest)) {
                 Set<Triplet<Integer, Integer, Integer>> circuit = new HashSet<>();
@@ -116,86 +114,8 @@ public class Playground {
         return (long) circuitSizes.get(lastIndex) * circuitSizes.get(lastIndex - 1) * circuitSizes.get(lastIndex - 2);
     }
 
-    public long part1Backup(List<String> lines) {
-        var result = 0L;
-
-        List<Set<Triplet<Integer, Integer, Integer>>> circuits = new ArrayList<>();
-        Map<Triplet<Integer, Integer, Integer>, Set<Triplet<Integer, Integer, Integer>>> junctionToCircuit = new HashMap<>();
-
-        Set<Triplet<Integer, Integer, Integer>> coordinates = new HashSet<>();
-
-        for (String line : lines) {
-            String[] split = line.split(",");
-
-            coordinates.add(new Triplet<>(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])));
-        }
-
-        for (var junctionBox : coordinates) {
-            double distance = Double.MAX_VALUE;
-            Triplet<Integer, Integer, Integer> closest = null;
-
-            for (var compareJunctionBox : coordinates) {
-                // Don't check against self
-                if (junctionBox == compareJunctionBox) continue;
-
-                // If both junction boxes are already part of a circuit, the skip
-                if (junctionToCircuit.containsKey(junctionBox) && junctionToCircuit.containsKey(compareJunctionBox))
-                    continue;
-
-                double lclDistance = distance(junctionBox, compareJunctionBox);
-
-                if (lclDistance < distance) {
-                    distance = lclDistance;
-                    closest = compareJunctionBox;
-                }
-            }
-
-            if (closest != null) {
-                // Either neither junction box is in a circuit, or only one is
-                if (!junctionToCircuit.containsKey(junctionBox) && !junctionToCircuit.containsKey(closest)) {
-                    Set<Triplet<Integer, Integer, Integer>> circuit = new HashSet<>();
-                    circuit.add(junctionBox);
-                    circuit.add(closest);
-                    junctionToCircuit.put(junctionBox, circuit);
-                    junctionToCircuit.put(closest, circuit);
-                    circuits.add(circuit);
-                } else {
-                    Triplet<Integer, Integer, Integer> circuited;
-                    Triplet<Integer, Integer, Integer> nonCircuited;
-
-                    if (junctionToCircuit.containsKey(junctionBox)) {
-                        circuited = junctionBox;
-                        nonCircuited = closest;
-                    } else {
-                        circuited = closest;
-                        nonCircuited = junctionBox;
-                    }
-
-                    junctionToCircuit.put(nonCircuited, junctionToCircuit.get(circuited));
-                    junctionToCircuit.get(circuited).add(nonCircuited);
-                }
-            }
-        }
-
-        List<Integer> circuitSizes = new ArrayList<>();
-
-        for (var circuit : circuits) {
-            circuitSizes.add(circuit.size());
-        }
-
-        circuitSizes.sort(Integer::compare);
-
-        int lastIndex = circuitSizes.size() - 1;
-
-        return (long) circuitSizes.get(lastIndex) * circuitSizes.get(lastIndex - 1) * circuitSizes.get(lastIndex - 2);
-    }
-
     public double distance(Triplet<Integer, Integer, Integer> box1, Triplet<Integer, Integer, Integer> box2) {
         return Math.sqrt(Math.pow(box1.value0() - box2.value0(), 2) + Math.pow(box1.value1() - box2.value1(), 2) + Math.pow(box1.value2() - box2.value2(), 2));
-    }
-
-    public int distance2(Triplet<Integer, Integer, Integer> box1, Triplet<Integer, Integer, Integer> box2) {
-        return Math.abs(box1.value0() - box2.value0()) + Math.abs(box1.value1() - box2.value1()) + Math.abs(box1.value2() - box2.value2());
     }
 
     public long part2(List<String> lines) {
