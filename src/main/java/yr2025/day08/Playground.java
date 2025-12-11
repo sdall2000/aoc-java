@@ -25,26 +25,17 @@ public class Playground {
         }
 
         // Create a map of distances to pairs of junction boxes
-        TreeMap<Integer, Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>>> tm = new TreeMap<>();
-
-        TreeMap<Integer, Set<Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>>>> tm2 = new TreeMap<>();
+        TreeMap<Double, Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>>> tm = new TreeMap<>();
 
         for (var junctionBox : coordinates) {
             for (var compareJunctionBox : coordinates) {
                 if (junctionBox == compareJunctionBox) continue;
 
-                int d = distance(junctionBox, compareJunctionBox);
+                double d = distance(junctionBox, compareJunctionBox);
 
                 if (tm.containsKey(d)) {
                 } else {
                     tm.put(d, new Pair<>(junctionBox, compareJunctionBox));
-                }
-
-                if (tm2.containsKey(d)) {
-                    tm2.get(d).add(new Pair<>(junctionBox, compareJunctionBox));
-                } else {
-                    tm2.put(d, new HashSet<Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>>>());
-                    tm2.get(d).add(new Pair<>(junctionBox, compareJunctionBox));
                 }
             }
         }
@@ -61,7 +52,6 @@ public class Playground {
 
                 // Both junction boxes are already on the same circuit - nothing to do
                 if (junctionBoxCircuit != closestCircuit) {
-
                     // Merge closestCircuit into junctionBoxCircuit
                     junctionBoxCircuit.addAll(closestCircuit);
 
@@ -73,8 +63,6 @@ public class Playground {
                     }
 
                     circuits.remove(closestCircuit);
-                } else {
-                    continue;
                 }
             } else if (!junctionToCircuit.containsKey(junctionBox) && !junctionToCircuit.containsKey(closest)) {
                 Set<Triplet<Integer, Integer, Integer>> circuit = new HashSet<>();
@@ -114,16 +102,21 @@ public class Playground {
 
         int lastIndex = circuitSizes.size() - 1;
 
-        return circuitSizes.get(lastIndex) * circuitSizes.get(lastIndex-1) * circuitSizes.get(lastIndex - 2);
+        return (long) circuitSizes.get(lastIndex) * circuitSizes.get(lastIndex - 1) * circuitSizes.get(lastIndex - 2);
     }
 
-    public long part1Backup(List<String> lines) {
-        var result = 0L;
+    public double distance(Triplet<Integer, Integer, Integer> box1, Triplet<Integer, Integer, Integer> box2) {
+        return Math.sqrt(Math.pow(box1.value0() - box2.value0(), 2) + Math.pow(box1.value1() - box2.value1(), 2) + Math.pow(box1.value2() - box2.value2(), 2));
+    }
 
+    public long part2(List<String> lines) {
         List<Set<Triplet<Integer, Integer, Integer>>> circuits = new ArrayList<>();
         Map<Triplet<Integer, Integer, Integer>, Set<Triplet<Integer, Integer, Integer>>> junctionToCircuit = new HashMap<>();
 
         Set<Triplet<Integer, Integer, Integer>> coordinates = new HashSet<>();
+
+        Set<Triplet<Integer, Integer, Integer>> unconnected = new HashSet<>();
+
 
         for (String line : lines) {
             String[] split = line.split(",");
@@ -131,72 +124,84 @@ public class Playground {
             coordinates.add(new Triplet<>(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])));
         }
 
-        for (var junctionBox : coordinates) {
-            int distance = Integer.MAX_VALUE;
-            Triplet<Integer, Integer, Integer> closest = null;
+        unconnected.addAll(coordinates);
 
+        // Create a map of distances to pairs of junction boxes
+        TreeMap<Double, Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>>> tm = new TreeMap<>();
+
+        for (var junctionBox : coordinates) {
             for (var compareJunctionBox : coordinates) {
-                // Don't check against self
                 if (junctionBox == compareJunctionBox) continue;
 
-                // If both junction boxes are already part of a circuit, the skip
-                if (junctionToCircuit.containsKey(junctionBox) && junctionToCircuit.containsKey(compareJunctionBox)) continue;
+                double d = distance(junctionBox, compareJunctionBox);
 
-                int lclDistance = distance(junctionBox, compareJunctionBox);
-
-                if (lclDistance < distance) {
-                    distance = lclDistance;
-                    closest = compareJunctionBox;
+                if (tm.containsKey(d)) {
+                } else {
+                    tm.put(d, new Pair<>(junctionBox, compareJunctionBox));
                 }
             }
+        }
 
-            if (closest != null) {
-                // Either neither junction box is in a circuit, or only one is
-                if (!junctionToCircuit.containsKey(junctionBox) && !junctionToCircuit.containsKey(closest)) {
-                    Set<Triplet<Integer, Integer, Integer>> circuit = new HashSet<>();
-                    circuit.add(junctionBox);
-                    circuit.add(closest);
-                    junctionToCircuit.put(junctionBox, circuit);
-                    junctionToCircuit.put(closest, circuit);
-                    circuits.add(circuit);
-                } else {
-                    Triplet<Integer, Integer, Integer> circuited;
-                    Triplet<Integer, Integer, Integer> nonCircuited;
+        Pair<Triplet<Integer, Integer, Integer>, Triplet<Integer, Integer, Integer>> lastPairConnected = null;
 
-                    if (junctionToCircuit.containsKey(junctionBox)) {
-                        circuited = junctionBox;
-                        nonCircuited = closest;
-                    } else {
-                        circuited = closest;
-                        nonCircuited = junctionBox;
+        for (var pair : tm.values()) {
+            var junctionBox = pair.value0();
+            var closest = pair.value1();
+
+            lastPairConnected = pair;
+
+            if (junctionToCircuit.containsKey(junctionBox) && junctionToCircuit.containsKey(closest)) {
+                var junctionBoxCircuit = junctionToCircuit.get(junctionBox);
+                var closestCircuit = junctionToCircuit.get(closest);
+
+                // Both junction boxes are already on the same circuit - nothing to do
+                if (junctionBoxCircuit != closestCircuit) {
+                    // Merge closestCircuit into junctionBoxCircuit
+                    junctionBoxCircuit.addAll(closestCircuit);
+
+                    // Now update junctionToCircuit to point to new circuit
+                    for (var entry : junctionToCircuit.entrySet()) {
+                        if (entry.getValue() == closestCircuit) {
+                            junctionToCircuit.put(entry.getKey(), junctionBoxCircuit);
+                        }
                     }
 
-                    junctionToCircuit.put(nonCircuited, junctionToCircuit.get(circuited));
-                    junctionToCircuit.get(circuited).add(nonCircuited);
+                    circuits.remove(closestCircuit);
                 }
+            } else if (!junctionToCircuit.containsKey(junctionBox) && !junctionToCircuit.containsKey(closest)) {
+                Set<Triplet<Integer, Integer, Integer>> circuit = new HashSet<>();
+                circuit.add(junctionBox);
+                circuit.add(closest);
+
+                unconnected.remove(junctionBox);
+                unconnected.remove(closest);
+
+                junctionToCircuit.put(junctionBox, circuit);
+                junctionToCircuit.put(closest, circuit);
+                circuits.add(circuit);
+            } else {
+                Triplet<Integer, Integer, Integer> circuited;
+                Triplet<Integer, Integer, Integer> nonCircuited;
+
+                if (junctionToCircuit.containsKey(junctionBox)) {
+                    circuited = junctionBox;
+                    nonCircuited = closest;
+                } else {
+                    circuited = closest;
+                    nonCircuited = junctionBox;
+                }
+
+                junctionToCircuit.put(nonCircuited, junctionToCircuit.get(circuited));
+                junctionToCircuit.get(circuited).add(nonCircuited);
+
+                unconnected.remove(nonCircuited);
             }
+
+            if (unconnected.isEmpty()) break;
         }
 
-        List<Integer> distances = new ArrayList<>();
+        if (lastPairConnected == null) return -1;
 
-        for (var circuit : circuits) {
-            distances.add(circuit.size());
-        }
-
-        distances.sort(Integer::compare);
-
-        int lastIndex = distances.size() - 1;
-
-        return distances.get(lastIndex) * distances.get(lastIndex-1) * distances.get(lastIndex - 2);
-    }
-
-    public int distance(Triplet<Integer, Integer, Integer> box1, Triplet<Integer, Integer, Integer> box2) {
-        return Math.abs(box1.value0() - box2.value0()) + Math.abs(box1.value1() - box2.value1()) + Math.abs(box1.value2() - box2.value2());
-    }
-
-    public long part2(List<String> lines) {
-        var result = 0L;
-
-        return result;
+        return (long) lastPairConnected.value0().value0() * lastPairConnected.value1().value0();
     }
 }
