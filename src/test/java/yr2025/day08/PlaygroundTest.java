@@ -19,6 +19,6 @@ public class PlaygroundTest {
         var lines = Utilities.readResourceLines("/yr2025/day08/input.txt");
         var solution = new Playground();
 
-        assertEquals(-1, solution.part2(lines));
+        assertEquals(1_026_594_680, solution.part2(lines));
     }
 }
