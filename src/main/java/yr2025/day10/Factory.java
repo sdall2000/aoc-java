@@ -1,5 +1,6 @@
 package yr2025.day10;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ public class Factory {
         Pattern digits = Pattern.compile("\\((\\d+(?:,\\d+)*)\\)");
 
         for (String machineLine : lines) {
+            System.out.println(machineLine);
             Matcher matcher = pattern.matcher(machineLine);
             Matcher digitsMatcher = digits.matcher(machineLine);
 
@@ -21,11 +23,27 @@ public class Factory {
 
             String endStateString = matcher.group(0);
 
-            if (!digitsMatcher.find()) return -1;
+            int actualLength = endStateString.length() - 2;
 
-            for (int i=1; i <= digitsMatcher.groupCount(); i++) {
-                System.out.println(digitsMatcher.group(0));
+            boolean[] initialState = new boolean[actualLength];
+            boolean[] goalState = new boolean[actualLength];
+
+            for (int i=1; i < endStateString.length()-1; i++) {
+                initialState[i-1] = false;
+                goalState[i-1] = endStateString.charAt(i) == '#';
             }
+
+            List<Boolean> buttons = new ArrayList<>();
+
+            while (digitsMatcher.find()) {
+                for (int i=1; i <= digitsMatcher.groupCount(); i++) {
+                    System.out.println(digitsMatcher.group(i));
+                }
+            }
+
+            System.out.println();
+
+            Machine machine = new Machine(initialState, goalState, null, null);
         }
 
         return result;

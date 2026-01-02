@@ -18,8 +18,10 @@ public class MovieTheaterTest {
 
     @Test
     void part2() throws IOException {
-        var lines = Utilities.readResourceLines("/yr2025/day09/input.txt");
+        var lines = Utilities.readResourceLines("/yr2025/day09/sample.txt");
         var solution = new MovieTheater();
+
+        // 4771532800 too high
 
         assertEquals(-1, solution.part2(lines));
     }

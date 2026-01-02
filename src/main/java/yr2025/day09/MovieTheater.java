@@ -63,26 +63,24 @@ public class MovieTheater {
 
                 if (area < largest) continue;
 
-                boolean exclude=false;
-
                 int minCol = Math.min(coord1.col(), coord2.col());
                 int maxCol = Math.max(coord1.col(), coord2.col());
                 int minRow = Math.min(coord1.row(), coord2.row());
                 int maxRow = Math.max(coord1.row(), coord2.row());
 
-                for (int row=minRow; row <= maxRow; row++) {
-                    if (exclude) break;
-                    for (int col=minCol; col <= maxCol; col++) {
-                        if (!shape.isPointInShape(new RowCol(row, col))) {
-                            exclude = true;
-                            break;
-                        }
-                    }
+                // Calculate the two opposite points in the rectangle
+                RowCol upperPoint = new RowCol(minRow, minCol);
+                if (coord1.equals(upperPoint) || coord2.equals(upperPoint)) {
+                    upperPoint = new RowCol(minRow, maxCol);
                 }
 
-                if (!exclude) {
-                    largest = Math.max(largest, area);
+                RowCol lowerPoint = new RowCol(maxRow, minCol);
+                if (coord1.equals(lowerPoint) || coord2.equals(lowerPoint)) {
+                    lowerPoint = new RowCol(maxRow, maxCol);
                 }
+
+                // Now, see if upperPoint and lowerPoint are in the shape.
+                if (shape.isPointInShape(upperPoint) && shape.isPointInShape(lowerPoint)) largest = Math.max(largest, area);
             }
         }
 
